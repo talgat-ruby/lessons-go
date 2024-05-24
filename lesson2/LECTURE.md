@@ -361,7 +361,7 @@ package main
 type slice struct {
 	len int
 	cap int
-	p   *int
+	p   *[]
 }
 ```
 
@@ -537,7 +537,7 @@ type person struct {
 func main() {
 	p := person{
 		FirstName: "Dwight",
-		// MiddleName: "Kurt", // This line won't compile
+		// MiddleName: &"Kurt", // This line won't compile
 		MiddleName: makePointer("Kurt"),
 		LastName:   "Schrute",
 	}
@@ -574,7 +574,8 @@ func update(pa *int) {
 func main() { 
 	a := 10
 	failedUpdate(&a) 
-	fmt.Println(a) // prints 10 update(&x)
+	fmt.Println(a) // prints 10
+	update(&a)
 	fmt.Println(a) // prints 20
 }
 ```
