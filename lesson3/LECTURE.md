@@ -274,10 +274,10 @@ func modifyFails(i int, s string, p person) {
 	p.name = "Bob"
 }
 
-func modifySuccess(i *int, s *string, p *person) {
-	*i = *i * 2
-	*s = "Goodbye"
-	p.name = "Bob"
+func modifySuccess(pi *int, ps *string, pp *person) {
+	*pi = *pi * 2
+	*ps = "Goodbye"
+	pp.name = "Bob"
 }
 ```
 
