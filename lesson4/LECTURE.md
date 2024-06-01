@@ -47,7 +47,7 @@ type character struct {
 	occupation string
 }
 
-func (c character) Info() {
+func (c character) info() {
 	fmt.Printf("name: %s, age: %d, occupation: %s\n", c.name, c.age, c.occupation)
 }
 
