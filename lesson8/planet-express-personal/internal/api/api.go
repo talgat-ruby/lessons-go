@@ -12,21 +12,24 @@ import (
 
 	"github.com/talgat-ruby/lessons-go/lesson8/planet-express-personal/internal/api/router"
 	"github.com/talgat-ruby/lessons-go/lesson8/planet-express-personal/internal/conf"
+	"github.com/talgat-ruby/lessons-go/lesson8/planet-express-personal/internal/db"
 )
 
 type Api struct {
-	conf *conf.ApiConfig
+	conf  *conf.ApiConfig
+	model *db.Model
 }
 
-func NewApi(conf *conf.ApiConfig) *Api {
+func NewApi(conf *conf.ApiConfig, model *db.Model) *Api {
 	return &Api{
-		conf: conf,
+		conf:  conf,
+		model: model,
 	}
 }
 
 func (a *Api) Start(ctx context.Context, cancel context.CancelFunc) {
 	mux := http.NewServeMux()
-	router.SetupRoutes(mux, a)
+	router.SetupRoutes(mux, a.model)
 
 	// start up HTTP
 	srv := &http.Server{

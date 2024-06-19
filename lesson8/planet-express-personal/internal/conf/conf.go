@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"context"
 	"flag"
 
 	"github.com/joho/godotenv"
@@ -16,22 +17,22 @@ type Config struct {
 	DB  *DBConfig
 }
 
-func NewConfig() (*Config, error) {
+func NewConfig(ctx context.Context) (*Config, error) {
 	conf := &Config{}
 
-	if err := godotenv.Load(".env", ".env.local", ".env.prod"); err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		return nil, err
 	}
 
 	// Api config
-	if c, err := newApiConfig(); err != nil {
+	if c, err := newApiConfig(ctx); err != nil {
 		return nil, err
 	} else {
 		conf.Api = c
 	}
 
 	// DB config
-	if c, err := newDBConfig(); err != nil {
+	if c, err := newDBConfig(ctx); err != nil {
 		return nil, err
 	} else {
 		conf.DB = c
