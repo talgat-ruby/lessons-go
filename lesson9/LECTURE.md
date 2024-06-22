@@ -152,3 +152,124 @@ func main() {
 	fmt.Println("main:", inMain, fromGoroutine)
 }
 ```
+
+## for loops
+
+The for range form of the **for loop** can be used to receive values from a channel until it is closed.
+
+```go
+package main
+
+import (
+	"fmt"
+)
+
+func producer(chnl chan int) {
+	for i := 0; i < 10; i++ {
+		chnl <- i
+	}
+	close(chnl)
+}
+
+func main() {
+	ch := make(chan int)
+	go producer(ch)
+	for v := range ch {
+		fmt.Println("Received ", v)
+	}
+}
+```
+
+_example2_
+
+## Best Practices
+
+### Clean up
+
+Whenever you launch a goroutine function, you must make sure that it will eventually exit. 
+Unlike variables, the Go runtime can’t detect that a goroutine will never be used again. 
+If a goroutine doesn't exit, all the memory allocated for variables on its stack remains allocated and 
+any memory on the heap that is rooted in the goroutine’s stack variables cannot be garbage collected. 
+This is called a _goroutine leak_.
+
+### Use context to Terminate Goroutines (?)
+
+Using the context to terminate a goroutine is a very common pattern. 
+It allows you to stop goroutines based on something from an earlier function in the call stack.
+
+_example3_
+
+### Turn Off a case in a select
+
+Use `nil`
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	done := make(chan struct{})
+	in, in2 := make(chan int), make(chan int)
+
+	go count(in, 10)
+	go count(in2, 3)
+
+	go func() {
+		for {
+			select {
+			case v, ok := <-in:
+				if !ok {
+					in = nil // ignores on a next iteration
+				} else {
+					fmt.Println("in", v)
+				}
+			case v, ok := <-in2:
+				if !ok {
+					in2 = nil // ignores on a next iteration
+				} else {
+					fmt.Println("in2", v)
+				}
+			}
+
+			if in == nil && in2 == nil {
+				done <- struct{}{}
+				return
+			}
+		}
+	}()
+
+	<-done // Wait for the completion signal
+}
+
+func count(ch chan<- int, n int) {
+	for i := 0; i < n; i++ {
+		ch <- i
+	}
+	close(ch)
+}
+```
+
+### Don't forget timeouts
+
+Most interactive programs have to return a response within a certain amount of time. 
+One of the things that you can do with concurrency in Go is manage how much time a request 
+(or a part of a request) has to run. For example:
+
+```go
+func timeLimit[T any](worker func() T, limit time.Duration) (T, error) {
+	out := make(chan T, 1)
+	ctx, cancel := context.WithTimeout(context.Background(), limit)
+	defer cancel()
+	go func() {
+		out <- worker()
+	}()
+	select {
+	case result := <-out:
+		return result, nil
+	case <-ctx.Done():
+		var zero T
+		return zero, errors.New("work timed out")
+	}
+}
+```
