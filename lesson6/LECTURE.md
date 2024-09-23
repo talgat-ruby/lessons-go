@@ -1,4 +1,4 @@
-# Lesson 6: Pulp Function
+# Lesson 6: Function
 
 ## Function
 
@@ -385,7 +385,7 @@ errors.Is(err, os.ErrNotExist)
 `As` - If wrapped error matches **type**
 
 ```go
-errors.As(err, &customErr)
+errors.As(err, &customErr{})
 ```
 
 - Stack trace
