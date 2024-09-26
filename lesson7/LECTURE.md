@@ -482,3 +482,40 @@ func main() {
 
 It means that the business logic invoked by your functions should be invoked via interfaces,
 but the output of your functions should be a concrete type.
+
+## Exercises
+
+### Exercise 1
+
+Write a struct `Family` which should have fields
+
+- `Name`
+- `NumberOfMembers`
+- `Assets` which is by itself also a struct with fields
+    - `NumberOfCars`,
+    - `NumberOfAssets`.
+
+Make sure to supply **constructor function**. Create two families `simpsons` and `smiths` (Rick & Morty).
+
+### Exercise 2
+
+Create `Game` struct with field
+
+- `Teams`
+
+and implement methods:
+
+- `AddTeam` which should add a team
+- `Announce` which should announces `Today we have {numberOfTeams} team(s): {team1}, {team2}...`
+
+Make sure to supply **constructor function**. Create a new game `quiz`. Add `simpsons` and `smiths` to `quiz`.
+
+### Exercise 3
+
+Create new struct `Company` with fields
+
+- `Name`
+- `NumberOfEmployees`
+- `Industry`
+
+Create a company `dunderMifflin`. And try to add to a quiz. Make any appropriate changes.
