@@ -1,4 +1,4 @@
-# Lesson 7: Extra
+# Lesson 8: Extra
 
 ## Repo, Module & Packages
 
@@ -23,7 +23,7 @@ Directive `require` describes the dependencies of your project. Because we have 
 order to see them:
 
 ```shell
-$ go get github.com/lib/pq
+$ go get github.com/rs/zerolog
 ```
 
 ```
