@@ -37,7 +37,7 @@ func serveGoodBye(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	mes := fmt.Sprintf("GoodBye %s! Your age is %d.", reqJson.Name, reqJson.Age)
+	mes := fmt.Sprintf("GoodBye %s! Your age is %d.", reqJson.Name, *reqJson.Age)
 
 	if r.Header.Get("Accept") == "application/json" {
 		respJson := ResponseJSON{

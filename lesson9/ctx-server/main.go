@@ -17,13 +17,12 @@ type handler struct {
 }
 
 func (h *handler) serveHelloWorld(w http.ResponseWriter, r *http.Request) {
-	//ctx := r.Context()
-	//text, ok := ctx.Value(TEXT_KEY).(string)
-	//if !ok {
-	//	w.WriteHeader(http.StatusInternalServerError)
-	//}
-	//log.Printf("Our text from context::%s", text)
-	log.Printf("Our text from context::%s", h.text)
+	ctx := r.Context()
+	text, ok := ctx.Value(TEXT_KEY).(string)
+	if !ok {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+	log.Printf("Our text from context::%s", text)
 
 	_, err := w.Write([]byte("Hello World"))
 	if err != nil {
@@ -40,10 +39,9 @@ func serveGoodBye(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
-	context.TODO()
 
 	text := "From context"
-	//newCtx := context.WithValue(ctx, TEXT_KEY, text)
+	newCtx := context.WithValue(ctx, TEXT_KEY, text)
 
 	h := &handler{text: text}
 
