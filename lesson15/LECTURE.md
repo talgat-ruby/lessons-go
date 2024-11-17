@@ -1,4 +1,4 @@
-# Lesson 8: Introduction to DB
+# Lesson 15: Introduction to DB
 
 1. **SQL-based relational databases**: These databases use SQL as their primary query language and
    follow the relational model, which organizes data into tables with well-defined relationships between them.
