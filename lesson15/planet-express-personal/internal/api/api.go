@@ -53,7 +53,6 @@ func (a *Api) Start(ctx context.Context, cancel context.CancelFunc) {
 		ctx,
 		"starting api service",
 		"port", a.conf.Port,
-		"playground", fmt.Sprintf("http://localhost:%d/", a.conf.Port),
 	)
 
 	shutdown := make(chan os.Signal, 1)   // Create channel to signify s signal being sent
