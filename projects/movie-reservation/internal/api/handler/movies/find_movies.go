@@ -1,66 +1,15 @@
-package main
+package movies
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"log/slog"
-	"net"
 	"net/http"
-	"os"
-	"strconv"
 
 	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/pkg/httputils/response"
 )
 
-type Api struct {
-	logger *slog.Logger
-	router *http.ServeMux
-	db     *DB
-}
-
-func newApi(logger *slog.Logger, db *DB) *Api {
-	mux := http.NewServeMux()
-
-	return &Api{
-		logger: logger,
-		router: mux,
-		db:     db,
-	}
-}
-
-func (a *Api) Start(ctx context.Context) error {
-	a.MoviesRouter(ctx)
-
-	port, err := strconv.Atoi(os.Getenv("API_PORT"))
-	if err != nil {
-		return err
-	}
-
-	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%d", port),
-		Handler: a.router,
-		BaseContext: func(_ net.Listener) context.Context {
-			return ctx
-		},
-	}
-
-	fmt.Printf("Starting server on :%d\n", port)
-	if err := srv.ListenAndServe(); err != nil && errors.Is(err, http.ErrServerClosed) {
-		return err
-	}
-
-	return nil
-}
-
-func (a *Api) MoviesRouter(ctx context.Context) {
-	a.router.HandleFunc("GET /movies", a.FindMovies)
-}
-
-func (a *Api) FindMovies(w http.ResponseWriter, r *http.Request) {
+func (h *Movies) FindMovies(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
-	log := a.logger.With("method", "FindMovies")
+	log := h.logger.With("method", "FindMovies")
 
 	//resp := struct {
 	//	Results []*ModelMovie `json:"results"`
@@ -84,7 +33,7 @@ func (a *Api) FindMovies(w http.ResponseWriter, r *http.Request) {
 	//	},
 	//}
 
-	dbResp, err := a.db.FindMovies(ctx)
+	dbResp, err := h.db.FindMovies(ctx)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
