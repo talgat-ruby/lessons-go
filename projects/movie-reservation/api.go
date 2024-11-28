@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -10,6 +9,8 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+
+	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/pkg/httputils/response"
 )
 
 type Api struct {
@@ -87,16 +88,16 @@ func (a *Api) FindMovies(w http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-
-	jsonResp, err := json.Marshal(resp)
-	if err != nil {
-		log.ErrorContext(ctx, "error happened in JSON write", "error", err)
-		w.Write([]byte(err.Error()))
-	}
-	if _, err := w.Write(jsonResp); err != nil {
-		log.ErrorContext(ctx, "error happened in JSON write", "error", err)
-		w.Write([]byte(err.Error()))
+	if err := response.JSON(
+		w,
+		http.StatusOK,
+		resp,
+	); err != nil {
+		log.ErrorContext(
+			ctx,
+			"fail json",
+			"error", err,
+		)
 		return
 	}
 
