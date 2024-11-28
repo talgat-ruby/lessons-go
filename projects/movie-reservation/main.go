@@ -24,7 +24,7 @@ func main() {
 		panic(err)
 	}
 
-	a := newApi(slog.With("service", "api"))
+	a := newApi(slog.With("service", "api"), d)
 	if err := a.Start(ctx); err != nil {
 		panic(err)
 	}

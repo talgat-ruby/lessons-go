@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"os"
 	"strconv"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -71,4 +72,58 @@ CREATE TABLE IF NOT EXISTS movie (
 
 	log.InfoContext(ctx, "success create table movie")
 	return nil
+}
+
+type ModelMovie struct {
+	ID          int        `json:"id"`
+	Title       string     `json:"title"`
+	Description string     `json:"description"`
+	PosterURL   string     `json:"poster_url"`
+	CreatedAt   *time.Time `json:"created_at"`
+	UpdatedAt   *time.Time `json:"updated_at"`
+}
+
+func (db *DB) FindMovies(ctx context.Context) ([]ModelMovie, error) {
+	log := db.logger.With("method", "FindMovies")
+
+	movies := make([]ModelMovie, 0)
+
+	stmt := `
+SELECT id, title, description, posterUrl, created_at, updated_at 
+FROM movie
+`
+
+	rows, err := db.pg.QueryContext(ctx, stmt)
+	if err != nil {
+		log.ErrorContext(ctx, "fail to query table movie", "error", err)
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		movie := ModelMovie{}
+
+		if err := rows.Scan(
+			&movie.ID,
+			&movie.Title,
+			&movie.Description,
+			&movie.PosterURL,
+			&movie.CreatedAt,
+			&movie.UpdatedAt,
+		); err != nil {
+			log.ErrorContext(ctx, "fail to scan movie", "error", err)
+			return nil, err
+		}
+
+		movies = append(movies, movie)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.ErrorContext(ctx, "fail to scan rows", "error", err)
+		return nil, err
+	}
+
+	log.InfoContext(ctx, "success create table movie")
+	return movies, nil
 }
