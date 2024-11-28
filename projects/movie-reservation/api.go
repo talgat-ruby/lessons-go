@@ -30,7 +30,7 @@ func newApi(logger *slog.Logger) *Api {
 func (a *Api) Start(ctx context.Context) error {
 	a.MoviesRouter(ctx)
 
-	port, err := strconv.Atoi(os.Getenv("PORT"))
+	port, err := strconv.Atoi(os.Getenv("API_PORT"))
 	if err != nil {
 		return err
 	}
