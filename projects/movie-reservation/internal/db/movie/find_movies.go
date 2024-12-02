@@ -4,7 +4,7 @@ import (
 	"context"
 )
 
-func (m *Movie) FindMovies(ctx context.Context) ([]ModelMovie, error) {
+func (m *Movie) FindMovies(ctx context.Context, offset, limit int) ([]ModelMovie, error) {
 	log := m.logger.With("method", "FindMovies")
 
 	movies := make([]ModelMovie, 0)
@@ -12,9 +12,11 @@ func (m *Movie) FindMovies(ctx context.Context) ([]ModelMovie, error) {
 	stmt := `
 SELECT id, title, description, posterUrl, created_at, updated_at 
 FROM movie
+OFFSET $1
+LIMIT $2
 `
 
-	rows, err := m.db.QueryContext(ctx, stmt)
+	rows, err := m.db.QueryContext(ctx, stmt, offset, limit)
 	if err != nil {
 		log.ErrorContext(ctx, "fail to query table movie", "error", err)
 		return nil, err

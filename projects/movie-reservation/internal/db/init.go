@@ -23,6 +23,18 @@ CREATE TABLE IF NOT EXISTS movie (
 		return err
 	}
 
+	seedStmt := `
+INSERT INTO movie (title, description, posterUrl)
+VALUES ('Lord of the Rings', 'Lord of the Rings', 'https://www.amazon.com/Lord-Rings-Movie-Poster-24x36/dp/B07D96K2QK'),
+       ('Back to the future', 'Back to the future', 'https://www.amazon.com/Back-Future-Movie-Poster-Regular/dp/B001CDQF8A'),
+       ('I, Robot', 'I, Robot', 'https://www.cinematerial.com/movies/i-robot-i343818');
+`
+
+	if _, err := db.pg.Exec(seedStmt); err != nil {
+		log.ErrorContext(ctx, "fail seed table movie", "error", err)
+		return err
+	}
+
 	log.InfoContext(ctx, "success create table movie")
 	return nil
 }

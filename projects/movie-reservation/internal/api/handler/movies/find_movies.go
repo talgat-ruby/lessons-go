@@ -2,6 +2,7 @@ package movies
 
 import (
 	"net/http"
+	"strconv"
 
 	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/internal/db/movie"
 	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/pkg/httputils/response"
@@ -16,29 +17,29 @@ func (h *Movies) FindMovies(w http.ResponseWriter, r *http.Request) {
 
 	log := h.logger.With("method", "FindMovies")
 
-	//resp := struct {
-	//	Results []*ModelMovie `json:"results"`
-	//}{
-	//	Results: []*ModelMovie{
-	//		{
-	//			Title:       "Lord of the Rings",
-	//			Description: "Lord of the Rings",
-	//			PosterURL:   "https://www.amazon.com/Lord-Rings-Movie-Poster-24x36/dp/B07D96K2QK",
-	//		},
-	//		{
-	//			Title:       "Back to the future",
-	//			Description: "Back to the future",
-	//			PosterURL:   "https://www.amazon.com/Back-Future-Movie-Poster-Regular/dp/B001CDQF8A",
-	//		},
-	//		{
-	//			Title:       "I, Robot",
-	//			Description: "I, Robot",
-	//			PosterURL:   "https://www.cinematerial.com/movies/i-robot-i343818",
-	//		},
-	//	},
-	//}
+	query := r.URL.Query()
+	offset, err := strconv.Atoi(query.Get("offset"))
+	if err != nil {
+		log.ErrorContext(
+			ctx,
+			"fail parse query offset",
+			"error", err,
+		)
+		http.Error(w, "invalid query offset", http.StatusBadRequest)
+		return
+	}
+	limit, err := strconv.Atoi(query.Get("limit"))
+	if err != nil {
+		log.ErrorContext(
+			ctx,
+			"fail parse query limit",
+			"error", err,
+		)
+		http.Error(w, "invalid query limit", http.StatusBadRequest)
+		return
+	}
 
-	dbResp, err := h.db.FindMovies(ctx)
+	dbResp, err := h.db.FindMovies(ctx, offset, limit)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
