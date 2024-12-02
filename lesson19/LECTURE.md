@@ -82,3 +82,18 @@ Uses a pointer (cursor) to fetch the next set of items.
 ```shell
 GET /users?cursor=abc123&limit=5
 ```
+
+## Graceful Shutdown
+
+A graceful shutdown is a controlled process of stopping a system, application, or service in a way that prevents data
+loss, ensures ongoing tasks are completed, and allows for proper cleanup of resources. Key characteristics include:
+
+- Stopping new incoming tasks while completing existing critical operations
+- Releasing system resources like file handles, network connections, and memory
+- Saving any unsaved data or application state
+- Closing connections and transactions safely
+- Logging shutdown information for diagnostics
+
+In programming, this is often implemented using signal handlers or shutdown hooks that catch termination signals and
+initiate a systematic shutdown sequence, preventing abrupt termination that could cause data corruption or system
+instability.
