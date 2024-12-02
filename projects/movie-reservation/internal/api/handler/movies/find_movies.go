@@ -3,8 +3,13 @@ package movies
 import (
 	"net/http"
 
+	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/internal/db/movie"
 	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/pkg/httputils/response"
 )
+
+type FindMoviesResponse struct {
+	Data []movie.ModelMovie `json:"data"`
+}
 
 func (h *Movies) FindMovies(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
@@ -39,10 +44,14 @@ func (h *Movies) FindMovies(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 
+	resp := FindMoviesResponse{
+		Data: dbResp,
+	}
+
 	if err := response.JSON(
 		w,
 		http.StatusOK,
-		dbResp,
+		resp,
 	); err != nil {
 		log.ErrorContext(
 			ctx,
@@ -55,7 +64,7 @@ func (h *Movies) FindMovies(w http.ResponseWriter, r *http.Request) {
 	log.InfoContext(
 		ctx,
 		"success find movies",
-		"number_of_movies", len(dbResp),
+		"number_of_movies", len(resp.Data),
 	)
 	return
 }

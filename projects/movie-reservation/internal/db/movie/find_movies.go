@@ -45,6 +45,6 @@ FROM movie
 		return nil, err
 	}
 
-	log.InfoContext(ctx, "success create table movie")
+	log.InfoContext(ctx, "success query table movie")
 	return movies, nil
 }
