@@ -19,7 +19,7 @@ type DB struct {
 }
 
 func New(logger *slog.Logger) (*DB, error) {
-	pgsql, err := newPgSQL()
+	pgsql, err := NewPgSQL()
 	if err != nil {
 		return nil, err
 	}
@@ -31,7 +31,7 @@ func New(logger *slog.Logger) (*DB, error) {
 	}, nil
 }
 
-func newPgSQL() (*sql.DB, error) {
+func NewPgSQL() (*sql.DB, error) {
 	host := os.Getenv("DB_HOST")
 	port, err := strconv.Atoi(os.Getenv("DB_PORT"))
 	if err != nil {

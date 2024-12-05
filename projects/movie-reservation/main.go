@@ -24,9 +24,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	if err := d.Init(ctx); err != nil {
-		panic(err)
-	}
 
 	a := api.New(slog.With("service", "api"), d)
 	go func(ctx context.Context, cancelFunc context.CancelFunc) {

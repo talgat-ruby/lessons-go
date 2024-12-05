@@ -41,6 +41,23 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  migrate:
+    image: migrate/migrate
+    profiles: [ "tools" ]
+    entrypoint: [
+      "migrate",
+      "-path",
+      "./migrations",
+      "-database",
+      "postgres://$DB_USER:$DB_PASSWORD@db:5432/$DB_NAME?sslmode=disable"
+    ]
+    volumes:
+      - ./internal/db/migrations:/migrations
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   db-data:
 
