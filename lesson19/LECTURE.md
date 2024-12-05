@@ -1,8 +1,10 @@
-# Lesson 16: REST API & Pagination
+# Lesson 19: REST API
 
 A REST API (Representational State Transfer Application Programming Interface) is a way to enable communication between
 client and server over the web. It follows the principles of the REST architectural style, which emphasize simplicity,
 scalability, and stateless interactions.
+
+[A specification for building APIs in JSON](https://jsonapi.org/)
 
 ## REST API
 
@@ -27,6 +29,7 @@ REST APIs use consistent and standardized resource URIs, making them easy to und
 REST treats everything as a resource, which can be represented using URIs (Uniform Resource Identifiers). For example:
 
 `/users` for a list of users
+
 `/users/123` for a specific user
 
 #### HTTP Methods
