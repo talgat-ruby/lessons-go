@@ -2,12 +2,13 @@ package router
 
 import (
 	"context"
+	"net/http"
 )
 
 func (r *Router) movies(ctx context.Context) {
-	r.router.HandleFunc("GET /movies", r.handler.FindMovies)
-	r.router.HandleFunc("GET /movies/{id}", r.handler.FindMovie)
-	r.router.HandleFunc("POST /movies", r.handler.CreateMovie)
-	r.router.HandleFunc("PUT /movies/{id}", r.handler.UpdateMovie)
-	r.router.HandleFunc("DELETE /movies/{id}", r.handler.DeleteMovie)
+	r.router.Handle("GET /movies", http.HandlerFunc(r.handler.FindMovies))
+	r.router.Handle("GET /movies/{id}", http.HandlerFunc(r.handler.FindMovie))
+	r.router.Handle("POST /movies", r.midd.Authenticator(http.HandlerFunc(r.handler.CreateMovie)))
+	r.router.Handle("PUT /movies/{id}", http.HandlerFunc(r.handler.UpdateMovie))
+	r.router.Handle("DELETE /movies/{id}", http.HandlerFunc(r.handler.DeleteMovie))
 }

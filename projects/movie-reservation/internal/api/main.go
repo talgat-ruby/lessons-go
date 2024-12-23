@@ -11,6 +11,7 @@ import (
 	"strconv"
 
 	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/internal/api/handler"
+	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/internal/api/middleware"
 	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/internal/api/router"
 	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/internal/db"
 )
@@ -21,8 +22,9 @@ type Api struct {
 }
 
 func New(logger *slog.Logger, db *db.DB) *Api {
+	midd := middleware.New(logger)
 	h := handler.New(logger, db)
-	r := router.New(h)
+	r := router.New(h, midd)
 
 	return &Api{
 		logger: logger,

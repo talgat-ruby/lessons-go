@@ -1,8 +1,10 @@
 package movies
 
 import (
+	"fmt"
 	"net/http"
 
+	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/internal/auth"
 	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/internal/db/movie"
 	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/pkg/httputils/request"
 	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/pkg/httputils/response"
@@ -19,6 +21,18 @@ type CreateMovieResponse struct {
 func (h *Movies) CreateMovie(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := h.logger.With("method", "CreateMovie")
+
+	user, ok := ctx.Value("user").(*auth.UserData)
+	if !ok {
+		log.ErrorContext(
+			ctx,
+			"failed to type cast user data",
+		)
+		http.Error(w, "failed to parse request body", http.StatusBadRequest)
+		return
+	}
+
+	fmt.Printf("user: %+v\n", *user)
 
 	// request parse
 	requestBody := &CreateMovieRequest{}

@@ -9,6 +9,7 @@ import (
 
 	_ "github.com/lib/pq"
 
+	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/internal/db/auth"
 	"github.com/talgat-ruby/lessons-go/projects/movie-reservation/internal/db/movie"
 )
 
@@ -16,6 +17,7 @@ type DB struct {
 	logger *slog.Logger
 	pg     *sql.DB
 	*movie.Movie
+	*auth.Auth
 }
 
 func New(logger *slog.Logger) (*DB, error) {
@@ -28,6 +30,7 @@ func New(logger *slog.Logger) (*DB, error) {
 		logger: logger,
 		pg:     pgsql,
 		Movie:  movie.New(pgsql, logger),
+		Auth:   auth.New(pgsql, logger),
 	}, nil
 }
 
