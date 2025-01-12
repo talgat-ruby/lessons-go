@@ -1,0 +1,63 @@
+# Comments are provided throughout this file to help you get started.
+# If you need more help, visit the Docker Compose reference guide at
+# https://docs.docker.com/go/compose-spec-reference/
+
+# Here the instructions define your application as a service called "server".
+# This service is built from the Dockerfile in the current directory.
+# You can add other services your application may depend on here, such as a
+# database or a cache. For examples, see the Awesome Compose repository:
+# https://github.com/docker/awesome-compose
+services:
+  server:
+    build:
+      context: .
+      target: final
+    environment:
+      - API_PORT=80
+      - PG_HOST=db
+      - PG_PORT=5432
+      - PG_NAME=$PG_NAME
+      - PG_USER=$PG_USER
+      - PG_PASSWORD=$PG_PASSWORD
+    ports:
+      - ${API_REST_PORT}:80
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=$PG_NAME
+      - POSTGRES_USER=$PG_USER
+      - POSTGRES_PASSWORD=$PG_PASSWORD
+    ports:
+      - ${PG_PORT}:5432
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", $PG_NAME, "-U", $PG_USER]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    image: migrate/migrate
+    profiles: ["tools"]
+    entrypoint:
+      [
+        "migrate",
+        "-path",
+        "./migrations",
+        "-database",
+        "postgres://$PG_USER:$PG_PASSWORD@db:5432/$PG_NAME?sslmode=disable",
+      ]
+    volumes:
+      - ./internal/postgres/migrations:/migrations
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
