@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"flag"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -25,11 +26,15 @@ func New(ctx context.Context) *Config {
 
 	load(env)
 
-	return &Config{
+	conf := &Config{
 		ENV:      env,
 		API:      newApiConfig(ctx),
 		Postgres: newPostgresConfig(ctx),
 	}
+
+	flag.Parse()
+
+	return conf
 }
 
 func load(env constant.Environment) error {
