@@ -26,3 +26,6 @@ go.work.sum
 
 # postgres local volume
 db-data
+
+# ide
+.lazy.lua

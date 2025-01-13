@@ -26,6 +26,7 @@ func New(handler *handler.Handler, midd *middleware.Middleware) *Router {
 
 func (r *Router) Start(ctx context.Context) *http.ServeMux {
 	r.auth(ctx)
+	r.expense(ctx)
 
 	return r.router
 }

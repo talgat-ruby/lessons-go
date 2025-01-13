@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/auth"
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/authentication"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/rest/constant"
 )
 
@@ -47,7 +47,7 @@ func (m *Middleware) Authenticator(
 
 		tokenString := authorizationHeader[len("Bearer "):]
 
-		userData, err := auth.ParseToken(tokenString, os.Getenv("TOKEN_SECRET"))
+		userData, err := authentication.ParseToken(tokenString, os.Getenv("TOKEN_SECRET"))
 		if err != nil {
 			log.ErrorContext(
 				ctx,

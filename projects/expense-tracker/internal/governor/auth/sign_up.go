@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/auth"
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/authentication"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/types/controller"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/validation"
 )
@@ -23,7 +23,7 @@ func (r *Auth) SignUp(ctx context.Context, req controller.SignUpReq) (controller
 		return nil, err
 	}
 
-	passHash, salt, err := auth.HashPassword(req.GetPassword(), r.conf.API.Pepper)
+	passHash, salt, err := authentication.HashPassword(req.GetPassword(), r.conf.API.Pepper)
 	if err != nil {
 		log.ErrorContext(ctx, "hashing password failed", slog.Any("error", err))
 		return nil, fmt.Errorf("hashing password failed %w", err)
@@ -36,11 +36,11 @@ func (r *Auth) SignUp(ctx context.Context, req controller.SignUpReq) (controller
 		return nil, fmt.Errorf("create user db failed %w", err)
 	}
 
-	u := &auth.UserData{
+	u := &authentication.UserData{
 		ID:    dbResp.GetID(),
 		Email: dbResp.GetEmail(),
 	}
-	t, err := auth.GenerateToken(u, r.conf.API.TokenSecret)
+	t, err := authentication.GenerateToken(u, r.conf.API.TokenSecret)
 	if err != nil {
 		log.ErrorContext(ctx, "generate token failed", slog.Any("error", err))
 		return nil, fmt.Errorf("generate token failed %w", err)

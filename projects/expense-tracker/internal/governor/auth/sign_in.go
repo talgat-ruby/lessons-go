@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 
-	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/auth"
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/authentication"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/types/controller"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/validation"
 )
@@ -29,7 +29,7 @@ func (r *Auth) SignIn(ctx context.Context, req controller.SignInReq) (controller
 		return nil, validation.NewError("invalid credentials")
 	}
 
-	isValid, err := auth.VerifyPassword(
+	isValid, err := authentication.VerifyPassword(
 		req.GetPassword(),
 		r.conf.API.Pepper,
 		dbResp.GetPasswordHash(),
@@ -44,11 +44,11 @@ func (r *Auth) SignIn(ctx context.Context, req controller.SignInReq) (controller
 		return nil, validation.NewError("invalid credentials")
 	}
 
-	u := &auth.UserData{
+	u := &authentication.UserData{
 		ID:    dbResp.GetID(),
 		Email: dbResp.GetEmail(),
 	}
-	t, err := auth.GenerateToken(u, r.conf.API.TokenSecret)
+	t, err := authentication.GenerateToken(u, r.conf.API.TokenSecret)
 	if err != nil {
 		log.ErrorContext(ctx, "generate token failed", slog.Any("error", err))
 		return nil, fmt.Errorf("generate token failed %w", err)

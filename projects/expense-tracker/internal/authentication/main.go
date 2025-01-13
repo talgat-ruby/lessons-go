@@ -1,4 +1,4 @@
-package auth
+package authentication
 
 type UserData struct {
 	ID    string `json:"id"`

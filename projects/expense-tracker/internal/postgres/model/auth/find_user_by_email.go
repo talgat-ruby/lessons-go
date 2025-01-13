@@ -7,7 +7,7 @@ import (
 	"log/slog"
 	"time"
 
-	pg "github.com/go-jet/jet/v2/postgres"
+	"github.com/go-jet/jet/v2/postgres"
 	"github.com/go-jet/jet/v2/qrm"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/postgres/generated/expenses/public/model"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/postgres/generated/expenses/public/table"
@@ -27,7 +27,7 @@ func (m *Auth) FindUserByEmail(ctx context.Context, req database.FindUserByEmail
 	}
 	stmt := table.User.
 		SELECT(table.User.AllColumns).
-		WHERE(table.User.Email.EQ(pg.String(req.GetEmail())))
+		WHERE(table.User.Email.EQ(postgres.String(req.GetEmail())))
 	if err := stmt.QueryContext(ctx, m.db, &mdl); err != nil {
 		switch {
 		case errors.Is(err, qrm.ErrNoRows):

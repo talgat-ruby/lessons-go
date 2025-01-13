@@ -24,7 +24,7 @@ func main() {
 	// logger
 	log := logger.New(conf.ENV != constant.EnvironmentLocal)
 
-	gov := governor.New(conf, log.With(slog.String("service", "governor")))
+	gov := governor.New(conf)
 
 	p, err := postgres.New(conf.Postgres, log.With(slog.String("service", "postgre")))
 	if err != nil {
@@ -32,7 +32,7 @@ func main() {
 		panic(err)
 	}
 
-	r := rest.New(conf.API.Rest, log.With(slog.String("service", "postgre")), gov)
+	r := rest.New(conf.API.Rest, log.With(slog.String("service", "rest")), gov)
 	go func(ctx context.Context, cancelFunc context.CancelFunc) {
 		if err := r.Start(ctx); err != nil {
 			log.ErrorContext(ctx, "failed to start rest", slog.Any("error", err))

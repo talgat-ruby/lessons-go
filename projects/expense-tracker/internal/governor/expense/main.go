@@ -1,4 +1,4 @@
-package auth
+package expense
 
 import (
 	"log/slog"
@@ -7,14 +7,14 @@ import (
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/types/database"
 )
 
-type Auth struct {
+type Expense struct {
 	conf   *config.Config
 	logger *slog.Logger
 	db     database.Database
 }
 
-func New(conf *config.Config, logger *slog.Logger, db database.Database) *Auth {
-	return &Auth{
+func New(conf *config.Config, logger *slog.Logger, db database.Database) *Expense {
+	return &Expense{
 		conf:   conf,
 		logger: logger,
 		db:     db,
