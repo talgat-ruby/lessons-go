@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log/slog"
 
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/authentication"
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/rest/constant"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/types/controller"
 )
 
@@ -17,33 +19,43 @@ func (r *Expense) RemoveExpense(ctx context.Context, req controller.RemoveExpens
 	}
 
 	// get user
-	// user, ok := ctx.Value("user").(*auth.UserData)
-	// if !ok {
-	// 	return nil, fmt.Errorf("user not found in context")
-	// }
+	user, ok := ctx.Value(constant.ContextUser).(*authentication.UserData)
+	if !ok {
+		log.ErrorContext(ctx, "user not found in context")
+		return nil, fmt.Errorf("user not found in context")
+	}
 
-	dbReq := newDeleteExpenseDBReq(req.GetID())
-	_, err := r.db.DeleteExpense(ctx, dbReq)
+	dbReq := newDeleteExpenseDBReq(user.ID, req.GetID())
+	dbResp, err := r.db.DeleteExpense(ctx, dbReq)
 	if err != nil {
 		log.ErrorContext(ctx, "db request failed", slog.Any("error", err))
 		return nil, fmt.Errorf("db request failed %w", err)
+	}
+	if dbResp == nil {
+		return nil, nil
 	}
 
 	log.InfoContext(
 		ctx,
 		"success",
 	)
-	return nil, nil
+	return true, nil
 }
 
 type deleteExpenseDBReq struct {
-	id string
+	userId string
+	id     string
 }
 
-func newDeleteExpenseDBReq(id string) *deleteExpenseDBReq {
+func newDeleteExpenseDBReq(userId, id string) *deleteExpenseDBReq {
 	return &deleteExpenseDBReq{
-		id: id,
+		userId: userId,
+		id:     id,
 	}
+}
+
+func (req *deleteExpenseDBReq) GetUserID() string {
+	return req.userId
 }
 
 func (req *deleteExpenseDBReq) GetID() string {

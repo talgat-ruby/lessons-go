@@ -2,6 +2,10 @@ package controller
 
 import "context"
 
+type Interceptor interface {
+	Authenticator(context.Context, string) (context.Context, error)
+}
+
 type Auth interface {
 	SignUp(context.Context, SignUpReq) (SignUpResp, error)
 	SignIn(context.Context, SignInReq) (SignInResp, error)
@@ -15,6 +19,7 @@ type Expense interface {
 }
 
 type Controller interface {
+	Interceptor
 	Auth
 	Expense
 }

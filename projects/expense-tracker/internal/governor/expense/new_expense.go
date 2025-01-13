@@ -6,6 +6,7 @@ import (
 	"log/slog"
 
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/authentication"
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/rest/constant"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/types/controller"
 )
 
@@ -18,23 +19,26 @@ func (r *Expense) NewExpense(ctx context.Context, req controller.NewExpenseReq) 
 	}
 
 	// get user
-	user, ok := ctx.Value("user").(*authentication.UserData)
+	user, ok := ctx.Value(constant.ContextUser).(*authentication.UserData)
 	if !ok {
 		return nil, fmt.Errorf("user not found in context")
 	}
 
 	dbReq := newCreateExpenseDBReq(user.ID, req.GetAmount(), req.GetCategory())
-	_, err := r.db.CreateExpense(ctx, dbReq)
+	dbResp, err := r.db.CreateExpense(ctx, dbReq)
 	if err != nil {
 		log.ErrorContext(ctx, "db request failed", slog.Any("error", err))
 		return nil, fmt.Errorf("db request failed %w", err)
+	}
+	if dbResp == nil {
+		return nil, nil
 	}
 
 	log.InfoContext(
 		ctx,
 		"success",
 	)
-	return nil, nil
+	return true, nil
 }
 
 type createExpenseDBReq struct {

@@ -1,14 +1,9 @@
 package middleware
 
 import (
-	"context"
 	"log/slog"
 	"net/http"
-	"os"
 	"strings"
-
-	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/authentication"
-	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/rest/constant"
 )
 
 func (m *Middleware) Authenticator(
@@ -47,7 +42,7 @@ func (m *Middleware) Authenticator(
 
 		tokenString := authorizationHeader[len("Bearer "):]
 
-		userData, err := authentication.ParseToken(tokenString, os.Getenv("TOKEN_SECRET"))
+		newCtx, err := m.ctrl.Authenticator(ctx, tokenString)
 		if err != nil {
 			log.ErrorContext(
 				ctx,
@@ -61,8 +56,6 @@ func (m *Middleware) Authenticator(
 			)
 			return
 		}
-
-		newCtx := context.WithValue(ctx, constant.ContextUser, userData)
 
 		next.ServeHTTP(w, r.WithContext(newCtx))
 	}

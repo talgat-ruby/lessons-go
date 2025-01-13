@@ -1,11 +1,10 @@
 package auth
 
 import (
-	"errors"
 	"log/slog"
 	"net/http"
 
-	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/validation"
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/rest/pkg/httperror"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/pkg/httputils/request"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/pkg/httputils/response"
 )
@@ -28,25 +27,11 @@ func (h *Auth) SignUp(w http.ResponseWriter, r *http.Request) {
 
 	ctrlResp, err := h.ctrl.SignUp(ctx, reqBody)
 	if err != nil || ctrlResp == nil {
-		valError := new(validation.Error)
-		switch {
-		case errors.As(err, &valError):
-			log.ErrorContext(
-				ctx,
-				"validation failed",
-				slog.Any("error", err),
-			)
-			http.Error(w, "invalid values", http.StatusBadRequest)
-			return
-		default:
-			log.ErrorContext(
-				ctx,
-				"failed to sign up user",
-				slog.Any("error", err),
-			)
-			http.Error(w, "failed to sign up user", http.StatusInternalServerError)
-			return
-		}
+		log.ErrorContext(ctx, "fail", slog.Any("error", err))
+		httperror.
+			NewMessage("", "invalid credentials", "", "").
+			HandleError(w, err)
+		return
 	}
 
 	respBody := &signUpResp{

@@ -1,6 +1,7 @@
 package database
 
 type DeleteExpenseReq interface {
+	GetUserID() string
 	GetID() string
 }
 
