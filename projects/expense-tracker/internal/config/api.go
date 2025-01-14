@@ -11,6 +11,7 @@ type APIConfig struct {
 	TokenSecret string
 	Pepper      string
 	Rest        *APIRestConfig
+	GraphQL     *APIGraphQLConfig
 }
 
 func newApiConfig(ctx context.Context) *APIConfig {
@@ -18,6 +19,7 @@ func newApiConfig(ctx context.Context) *APIConfig {
 		TokenSecret: os.Getenv("API_TOKEN_SECRET"),
 		Pepper:      os.Getenv("API_PEPPER"),
 		Rest:        newApiRestConfig(ctx),
+		GraphQL:     newApiGraphQLConfig(ctx),
 	}
 
 	flag.StringVar(&c.TokenSecret, "api-token-secret", c.TokenSecret, "api token secret [API_TOKEN_SECRET]")
@@ -41,6 +43,25 @@ func newApiRestConfig(_ context.Context) *APIRestConfig {
 
 	flag.StringVar(&c.Host, "api-rest-host", c.Host, "api rest host [API_REST_HOST]")
 	flag.IntVar(&c.Port, "api-rest-port", c.Port, "api rest port [API_REST_PORT]")
+
+	return c
+}
+
+type APIGraphQLConfig struct {
+	Host string
+	Port int
+}
+
+func newApiGraphQLConfig(_ context.Context) *APIGraphQLConfig {
+	port, _ := strconv.Atoi(os.Getenv("API_GRAPHQL_PORT"))
+
+	c := &APIGraphQLConfig{
+		Host: os.Getenv("API_GRAPHQL_HOST"),
+		Port: port,
+	}
+
+	flag.StringVar(&c.Host, "api-graphql-host", c.Host, "api graphql host [API_GRAPHQL_HOST]")
+	flag.IntVar(&c.Port, "api-graphql-port", c.Port, "api graphql port [API_GRAPHQL_PORT]")
 
 	return c
 }
