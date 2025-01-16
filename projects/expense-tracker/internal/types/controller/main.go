@@ -12,7 +12,7 @@ type Auth interface {
 }
 
 type Expense interface {
-	// ListExpense(context.Context, ListExpenseReq) (ListExpenseResp, error)
+	ListExpense(context.Context, ListExpenseReq) (ListExpenseResp, error)
 	NewExpense(context.Context, NewExpenseReq) (NewExpenseResp, error)
 	AlterExpense(context.Context, AlterExpenseReq) (AlterExpenseResp, error)
 	RemoveExpense(context.Context, RemoveExpenseReq) (RemoveExpenseResp, error)

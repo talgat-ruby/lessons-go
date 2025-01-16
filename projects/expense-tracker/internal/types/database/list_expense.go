@@ -1,4 +1,4 @@
-package controller
+package database
 
 import (
 	"time"
@@ -38,6 +38,7 @@ type ListExpenseReqFilter interface {
 }
 
 type ListExpenseReq interface {
+	GetUserID() string
 	shared.PaginationOffset
 	shared.SortBy[ExpenseSortByField]
 	ListExpenseReqFilter

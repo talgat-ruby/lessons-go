@@ -1,4 +1,4 @@
-package controller
+package shared
 
 type SortByDirection string
 
@@ -11,6 +11,16 @@ const (
 	SortByDirectionDescNullsFirst SortByDirection = "DescNullsFirst"
 	SortByDirectionDescNullsLast  SortByDirection = "DescNullsLast"
 )
+
+var SortByDirections = []SortByDirection{
+	SortByDirectionUnspecified,
+	SortByDirectionAsc,
+	SortByDirectionDesc,
+	SortByDirectionAscNullsFirst,
+	SortByDirectionAscNullsLast,
+	SortByDirectionDescNullsFirst,
+	SortByDirectionDescNullsLast,
+}
 
 type SortBy[Field ~string] interface {
 	GetSortBy() []SortByItem[Field]

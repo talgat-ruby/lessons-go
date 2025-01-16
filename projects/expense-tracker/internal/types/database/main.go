@@ -8,6 +8,7 @@ type User interface {
 }
 
 type Expense interface {
+	ListExpense(context.Context, ListExpenseReq) (ListExpenseResp, error)
 	CreateExpense(context.Context, CreateExpenseReq) (CreateExpenseResp, error)
 	UpdateExpense(context.Context, UpdateExpenseReq) (UpdateExpenseResp, error)
 	DeleteExpense(context.Context, DeleteExpenseReq) (DeleteExpenseResp, error)

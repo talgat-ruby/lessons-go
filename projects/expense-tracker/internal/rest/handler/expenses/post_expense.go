@@ -9,12 +9,12 @@ import (
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/pkg/httputils/response"
 )
 
-func (h *Expenses) PostExpenses(w http.ResponseWriter, r *http.Request) {
+func (h *Expenses) PostExpense(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
-	log := h.logger.With("method", "PostExpenses")
+	log := h.logger.With("method", "PostExpense")
 
 	// request parse
-	reqBody := new(postExpensesReq)
+	reqBody := new(postExpenseReq)
 	if err := request.JSON(w, r, reqBody); err != nil {
 		log.ErrorContext(
 			ctx,
@@ -53,19 +53,19 @@ func (h *Expenses) PostExpenses(w http.ResponseWriter, r *http.Request) {
 	)
 }
 
-type postExpensesReq struct {
-	Data *postExpensesReqData `json:"data"`
+type postExpenseReq struct {
+	Data *postExpenseReqData `json:"data"`
 }
 
-func (b *postExpensesReq) GetAmount() int64 {
+func (b *postExpenseReq) GetAmount() int64 {
 	return b.Data.Amount
 }
 
-func (b *postExpensesReq) GetCategory() string {
+func (b *postExpenseReq) GetCategory() string {
 	return b.Data.Category
 }
 
-type postExpensesReqData struct {
+type postExpenseReqData struct {
 	Amount   int64  `json:"amount"`
 	Category string `json:"category"`
 }
