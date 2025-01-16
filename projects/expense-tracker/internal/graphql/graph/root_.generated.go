@@ -12,6 +12,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/graphql/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -34,19 +35,36 @@ type Config struct {
 }
 
 type ResolverRoot interface {
+	Mutation() MutationResolver
 	Query() QueryResolver
 }
 
 type DirectiveRoot struct {
+	Auth func(ctx context.Context, obj any, next graphql.Resolver) (res any, err error)
 }
 
 type ComplexityRoot struct {
+	Mutation struct {
+		CreateExpense func(childComplexity int, amount int32, category model.Category) int
+		GetPing       func(childComplexity int) int
+		SignIn        func(childComplexity int, email string, password string) int
+		SignUp        func(childComplexity int, email string, password string) int
+	}
+
 	Ping struct {
 		Message func(childComplexity int) int
 	}
 
 	Query struct {
 		GetPing func(childComplexity int) int
+	}
+
+	SignInResp struct {
+		Token func(childComplexity int) int
+	}
+
+	SignUpResp struct {
+		Token func(childComplexity int) int
 	}
 }
 
@@ -69,6 +87,49 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	_ = ec
 	switch typeName + "." + field {
 
+	case "Mutation.createExpense":
+		if e.complexity.Mutation.CreateExpense == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createExpense_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateExpense(childComplexity, args["amount"].(int32), args["category"].(model.Category)), true
+
+	case "Mutation.getPing":
+		if e.complexity.Mutation.GetPing == nil {
+			break
+		}
+
+		return e.complexity.Mutation.GetPing(childComplexity), true
+
+	case "Mutation.signIn":
+		if e.complexity.Mutation.SignIn == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_signIn_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SignIn(childComplexity, args["email"].(string), args["password"].(string)), true
+
+	case "Mutation.signUp":
+		if e.complexity.Mutation.SignUp == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_signUp_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SignUp(childComplexity, args["email"].(string), args["password"].(string)), true
+
 	case "Ping.message":
 		if e.complexity.Ping.Message == nil {
 			break
@@ -82,6 +143,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetPing(childComplexity), true
+
+	case "SignInResp.token":
+		if e.complexity.SignInResp.Token == nil {
+			break
+		}
+
+		return e.complexity.SignInResp.Token(childComplexity), true
+
+	case "SignUpResp.token":
+		if e.complexity.SignUpResp.Token == nil {
+			break
+		}
+
+		return e.complexity.SignUpResp.Token(childComplexity), true
 
 	}
 	return 0, false
@@ -123,6 +198,21 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			}
 
 			return &response
+		}
+	case ast.Mutation:
+		return func(ctx context.Context) *graphql.Response {
+			if !first {
+				return nil
+			}
+			first = false
+			ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
+			data := ec._Mutation(ctx, opCtx.Operation.SelectionSet)
+			var buf bytes.Buffer
+			data.MarshalGQL(&buf)
+
+			return &graphql.Response{
+				Data: buf.Bytes(),
+			}
 		}
 
 	default:
@@ -171,7 +261,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 	return introspection.WrapTypeFromDef(ec.Schema(), ec.Schema().Types[name]), nil
 }
 
-//go:embed "schema/ping.graphqls" "schema/ping.query.graphqls"
+//go:embed "schema/auth.directives.graphqls" "schema/auth.mutation.graphqls" "schema/expense.mutation.graphqls" "schema/ping.graphqls" "schema/ping.query.graphqls"
 var sourcesFS embed.FS
 
 func sourceData(filename string) string {
@@ -183,6 +273,9 @@ func sourceData(filename string) string {
 }
 
 var sources = []*ast.Source{
+	{Name: "schema/auth.directives.graphqls", Input: sourceData("schema/auth.directives.graphqls"), BuiltIn: false},
+	{Name: "schema/auth.mutation.graphqls", Input: sourceData("schema/auth.mutation.graphqls"), BuiltIn: false},
+	{Name: "schema/expense.mutation.graphqls", Input: sourceData("schema/expense.mutation.graphqls"), BuiltIn: false},
 	{Name: "schema/ping.graphqls", Input: sourceData("schema/ping.graphqls"), BuiltIn: false},
 	{Name: "schema/ping.query.graphqls", Input: sourceData("schema/ping.query.graphqls"), BuiltIn: false},
 }

@@ -30,3 +30,9 @@ jet
 ```shell
 go run ./internal/cli/... jet
 ```
+
+graphql
+
+```shell
+go run github.com/99designs/gqlgen generate
+```

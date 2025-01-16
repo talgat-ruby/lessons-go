@@ -6,10 +6,16 @@ package graph
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/graphql/graph/model"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/pkg/ptr"
 )
+
+// GetPing is the resolver for the getPing field.
+func (r *mutationResolver) GetPing(ctx context.Context) (*model.Ping, error) {
+	panic(fmt.Errorf("not implemented: GetPing - getPing"))
+}
 
 // GetPing is the resolver for the getPing field.
 func (r *queryResolver) GetPing(ctx context.Context) (*model.Ping, error) {
@@ -18,7 +24,11 @@ func (r *queryResolver) GetPing(ctx context.Context) (*model.Ping, error) {
 	}, nil
 }
 
+// Mutation returns MutationResolver implementation.
+func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
+type mutationResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }

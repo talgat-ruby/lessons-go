@@ -2,9 +2,79 @@
 
 package model
 
+import (
+	"fmt"
+	"io"
+	"strconv"
+)
+
+type Mutation struct {
+}
+
 type Ping struct {
 	Message *string `json:"message,omitempty"`
 }
 
 type Query struct {
+}
+
+type SignInResp struct {
+	Token string `json:"token"`
+}
+
+type SignUpResp struct {
+	Token string `json:"token"`
+}
+
+type Category string
+
+const (
+	CategoryUnspecified Category = "UNSPECIFIED"
+	CategoryOther       Category = "OTHER"
+	CategoryGroceries   Category = "GROCERIES"
+	CategoryLeisure     Category = "LEISURE"
+	CategoryElectronics Category = "ELECTRONICS"
+	CategoryUtilities   Category = "UTILITIES"
+	CategoryClothing    Category = "CLOTHING"
+	CategoryHealth      Category = "HEALTH"
+)
+
+var AllCategory = []Category{
+	CategoryUnspecified,
+	CategoryOther,
+	CategoryGroceries,
+	CategoryLeisure,
+	CategoryElectronics,
+	CategoryUtilities,
+	CategoryClothing,
+	CategoryHealth,
+}
+
+func (e Category) IsValid() bool {
+	switch e {
+	case CategoryUnspecified, CategoryOther, CategoryGroceries, CategoryLeisure, CategoryElectronics, CategoryUtilities, CategoryClothing, CategoryHealth:
+		return true
+	}
+	return false
+}
+
+func (e Category) String() string {
+	return string(e)
+}
+
+func (e *Category) UnmarshalGQL(v any) error {
+	str, ok := v.(string)
+	if !ok {
+		return fmt.Errorf("enums must be strings")
+	}
+
+	*e = Category(str)
+	if !e.IsValid() {
+		return fmt.Errorf("%s is not a valid Category", str)
+	}
+	return nil
+}
+
+func (e Category) MarshalGQL(w io.Writer) {
+	fmt.Fprint(w, strconv.Quote(e.String()))
 }

@@ -1,0 +1,14 @@
+extend type Mutation {
+    createExpense(amount: Int!, category: Category!): Boolean! @auth
+}
+
+enum Category {
+    UNSPECIFIED
+    OTHER
+    GROCERIES
+    LEISURE
+    ELECTRONICS
+    UTILITIES
+    CLOTHING
+    HEALTH
+}
