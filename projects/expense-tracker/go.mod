@@ -10,6 +10,8 @@ require (
 	github.com/lib/pq v1.10.9
 	github.com/talgat-ruby/lessons-go/projects/movie-reservation v0.0.0-20241223121951-876f51d37737
 	github.com/vektah/gqlparser/v2 v2.5.21
+	google.golang.org/grpc v1.69.4
+	google.golang.org/protobuf v1.36.1
 )
 
 require (
@@ -27,8 +29,11 @@ require (
 	github.com/urfave/cli/v2 v2.27.5 // indirect
 	github.com/xrash/smetrics v0.0.0-20240521201337-686a1a2994c1 // indirect
 	golang.org/x/mod v0.20.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/sync v0.10.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/tools v0.24.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241015192408-796eee8c2d53 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

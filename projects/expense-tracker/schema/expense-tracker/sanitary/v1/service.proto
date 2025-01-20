@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package expense_tracker.sanitary.v1;
+
+import "expense-tracker/sanitary/v1/ping.proto";
+
+option go_package = "github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/grpc/generated/expense-tracker/sanitary/v1";
+
+service SanitaryService {
+  rpc Ping(PingRequest) returns (PingResponse);
+}

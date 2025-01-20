@@ -11,6 +11,7 @@ import (
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/constant"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/governor"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/graphql"
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/grpc"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/postgres"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/rest"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/pkg/logger"
@@ -45,7 +46,16 @@ func main() {
 	g := graphql.New(conf.API.GraphQL, log.With(slog.String("service", "graphql")), gov)
 	go func(ctx context.Context, cancelFunc context.CancelFunc) {
 		if err := g.Start(ctx); err != nil {
-			log.ErrorContext(ctx, "failed to start rest", slog.Any("error", err))
+			log.ErrorContext(ctx, "failed to start graphql", slog.Any("error", err))
+		}
+
+		cancelFunc()
+	}(ctx, cancel)
+
+	gr := grpc.New(conf.API.Grpc, log.With(slog.String("service", "grpc")), gov)
+	go func(ctx context.Context, cancelFunc context.CancelFunc) {
+		if err := gr.Start(ctx); err != nil {
+			log.ErrorContext(ctx, "failed to start grpc", slog.Any("error", err))
 		}
 
 		cancelFunc()
