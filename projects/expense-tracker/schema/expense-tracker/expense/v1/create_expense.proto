@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package expense_tracker.expense.v1;
+
+option go_package = "github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/grpc/generated/expense-tracker/expense/v1";
+
+enum ExpenseCategory {
+  //  By default will be EXPENSE_CATEGORY_OTHER
+  EXPENSE_CATEGORY_UNSPECIFIED = 0;
+  EXPENSE_CATEGORY_OTHER = 1;
+  EXPENSE_CATEGORY_GROCERIES = 2;
+  EXPENSE_CATEGORY_LEISURE = 3;
+  EXPENSE_CATEGORY_ELECTRONICS = 4;
+  EXPENSE_CATEGORY_UTILITIES = 5;
+  EXPENSE_CATEGORY_CLOTHING = 6;
+  EXPENSE_CATEGORY_HEALTH = 7;
+}
+
+message CreateExpenseRequest {
+  int64 amount = 1;
+  ExpenseCategory category = 2;
+}
+
+message CreateExpenseResponse{}

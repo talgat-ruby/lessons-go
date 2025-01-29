@@ -3,32 +3,12 @@ package database
 import (
 	"time"
 
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/constant"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/types/shared"
 )
 
-type ExpenseSortByField string
-
-const (
-	ExpenseSortByFieldUnspecified ExpenseSortByField = "unspecified"
-	ExpenseSortByFieldID          ExpenseSortByField = "id"
-	ExpenseSortByFieldAmount      ExpenseSortByField = "amount"
-	ExpenseSortByFieldCategory    ExpenseSortByField = "category"
-	ExpenseSortByFieldCreatedAt   ExpenseSortByField = "createdAt"
-	ExpenseSortByFieldUpdatedAt   ExpenseSortByField = "updatedAt"
-)
-
-var ExpenseSortByFields = []ExpenseSortByField{
-	ExpenseSortByFieldUnspecified,
-	ExpenseSortByFieldID,
-	ExpenseSortByFieldAmount,
-	ExpenseSortByFieldCategory,
-	ExpenseSortByFieldCreatedAt,
-	ExpenseSortByFieldUpdatedAt,
-}
-
-type ListExpenseReqFilter interface {
-	FilterAnd() []ListExpenseReqFilter
-	FilterOr() []ListExpenseReqFilter
+type ListExpenseReqFilterItem interface {
+	shared.FilterItem[ListExpenseReqFilterItem]
 	FilterCreatedAt() shared.TimeExp
 	FilterUpdatedAt() shared.TimeExp
 	FilterID() shared.IDExp
@@ -40,8 +20,8 @@ type ListExpenseReqFilter interface {
 type ListExpenseReq interface {
 	GetUserID() string
 	shared.PaginationOffset
-	shared.SortBy[ExpenseSortByField]
-	ListExpenseReqFilter
+	shared.SortBy[constant.ExpenseSortByField]
+	shared.Filter[ListExpenseReqFilterItem]
 }
 
 type ListExpenseResp interface {

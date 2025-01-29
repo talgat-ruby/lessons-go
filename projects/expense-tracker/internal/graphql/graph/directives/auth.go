@@ -8,7 +8,7 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/authentication"
-	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/rest/constant"
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/constant"
 )
 
 func (d *Directives) AuthDirective(ctx context.Context, obj any, next graphql.Resolver) (res any, err error) {

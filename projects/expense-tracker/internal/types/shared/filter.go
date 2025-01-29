@@ -2,6 +2,15 @@ package shared
 
 import "time"
 
+type Filter[F any] interface {
+	GetFilter() F
+}
+
+type FilterItem[F any] interface {
+	FilterAnd() []F
+	FilterOr() []F
+}
+
 type IsNullExp interface {
 	IsNull() *bool
 }

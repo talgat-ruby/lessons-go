@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package expense_tracker.expense.v1;
+
+import "expense-tracker/expense/v1/create_expense.proto";
+
+option go_package = "github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/grpc/generated/expense-tracker/expense/v1";
+
+service ExpenseService {
+  rpc CreateExpense(CreateExpenseRequest) returns (CreateExpenseResponse);
+}

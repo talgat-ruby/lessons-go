@@ -8,7 +8,6 @@ import (
 
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/rest/pkg/filter"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/rest/pkg/httperror"
-	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/types/controller"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/types/shared"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/pkg/httputils/request"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/pkg/httputils/response"
@@ -19,7 +18,7 @@ func (h *Expenses) GetExpenses(w http.ResponseWriter, r *http.Request) {
 	log := h.logger.With("method", "GetExpenses")
 
 	// request parse
-	reqBody := new(getExpensesReq)
+	reqBody := &getExpensesReq{}
 	if err := request.JSON(w, r, reqBody); err != nil {
 		log.ErrorContext(
 			ctx,
@@ -30,7 +29,7 @@ func (h *Expenses) GetExpenses(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ctrlResp, err := h.ctrl.ListExpense(ctx, reqBody)
+	_, err := h.ctrl.ListExpense(ctx, nil)
 	if err != nil {
 		log.ErrorContext(ctx, "fail", slog.Any("error", err))
 		httperror.
@@ -39,23 +38,23 @@ func (h *Expenses) GetExpenses(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	respBody := new(getExpensesResp)
-	for _, it := range ctrlResp.GetList() {
-		item := &getExpensesRespDataItem{
-			ID:        it.GetID(),
-			UserID:    it.GetUserID(),
-			Amount:    it.GetAmount(),
-			Category:  it.GetCategory(),
-			CreatedAt: it.GetCreatedAt(),
-			UpdatedAt: it.GetUpdatedAt(),
-		}
-		respBody.Data = append(respBody.Data, item)
-	}
+	//respBody := &getExpensesResp{}
+	//for _, it := range ctrlResp.GetList() {
+	//	item := &getExpensesRespDataItem{
+	//		ID:        it.GetID(),
+	//		UserID:    it.GetUserID(),
+	//		Amount:    it.GetAmount(),
+	//		Category:  it.GetCategory(),
+	//		CreatedAt: it.GetCreatedAt(),
+	//		UpdatedAt: it.GetUpdatedAt(),
+	//	}
+	//	respBody.Data = append(respBody.Data, item)
+	//}
 
 	if err := response.JSON(
 		w,
 		http.StatusOK,
-		respBody,
+		nil,
 	); err != nil {
 		log.ErrorContext(
 			ctx,
@@ -83,21 +82,21 @@ func (req *getExpensesReq) GetLimit() int {
 	return req.Data.Pagination.Limit
 }
 
-func (req *getExpensesReq) GetSortBy() []shared.SortByItem[controller.ExpenseSortByField] {
-	result := make([]shared.SortByItem[controller.ExpenseSortByField], 0, len(req.Data.SortBy))
-	for _, item := range req.Data.SortBy {
-		result = append(result, item)
-	}
-	return result
-}
-
-func (req *getExpensesReq) FilterAnd() []controller.ListExpenseReqFilter {
-	return req.Data.Filter.FilterAnd()
-}
-
-func (req *getExpensesReq) FilterOr() []controller.ListExpenseReqFilter {
-	return req.Data.Filter.FilterOr()
-}
+//func (req *getExpensesReq) GetSortBy() []shared.SortByItem[controller.ExpenseSortByField] {
+//	result := make([]shared.SortByItem[controller.ExpenseSortByField], 0, len(req.Data.SortBy))
+//	for _, item := range req.Data.SortBy {
+//		result = append(result, item)
+//	}
+//	return result
+//}
+//
+//func (req *getExpensesReq) FilterAnd() []controller.ListExpenseReqFilter {
+//	return req.Data.Filter.FilterAnd()
+//}
+//
+//func (req *getExpensesReq) FilterOr() []controller.ListExpenseReqFilter {
+//	return req.Data.Filter.FilterOr()
+//}
 
 func (req *getExpensesReq) FilterCreatedAt() shared.TimeExp {
 	return req.Data.Filter.FilterCreatedAt()
@@ -149,15 +148,15 @@ func (s *getExpensesSortByItem) GetDirection() shared.SortByDirection {
 	return shared.SortByDirectionUnspecified
 }
 
-func (s *getExpensesSortByItem) GetField() controller.ExpenseSortByField {
-	for _, f := range controller.ExpenseSortByFields {
-		if strings.EqualFold(s.Field, string(f)) {
-			return f
-		}
-	}
-
-	return controller.ExpenseSortByFieldUnspecified
-}
+//func (s *getExpensesSortByItem) GetField() controller.ExpenseSortByField {
+//	for _, f := range controller.ExpenseSortByFields {
+//		if strings.EqualFold(s.Field, string(f)) {
+//			return f
+//		}
+//	}
+//
+//	return controller.ExpenseSortByFieldUnspecified
+//}
 
 type getExpensesFilter struct {
 	And       []*getExpensesFilter             `json:"and,omitempty"`
@@ -170,21 +169,21 @@ type getExpensesFilter struct {
 	Category  *filter.StringExp                `json:"category,omitempty"`
 }
 
-func (req *getExpensesFilter) FilterAnd() []controller.ListExpenseReqFilter {
-	result := make([]controller.ListExpenseReqFilter, 0, len(req.And))
-	for _, item := range req.And {
-		result = append(result, item)
-	}
-	return result
-}
-
-func (req *getExpensesFilter) FilterOr() []controller.ListExpenseReqFilter {
-	result := make([]controller.ListExpenseReqFilter, 0, len(req.Or))
-	for _, item := range req.Or {
-		result = append(result, item)
-	}
-	return result
-}
+//func (req *getExpensesFilter) FilterAnd() []controller.ListExpenseReqFilter {
+//	result := make([]controller.ListExpenseReqFilter, 0, len(req.And))
+//	for _, item := range req.And {
+//		result = append(result, item)
+//	}
+//	return result
+//}
+//
+//func (req *getExpensesFilter) FilterOr() []controller.ListExpenseReqFilter {
+//	result := make([]controller.ListExpenseReqFilter, 0, len(req.Or))
+//	for _, item := range req.Or {
+//		result = append(result, item)
+//	}
+//	return result
+//}
 
 func (req *getExpensesFilter) FilterCreatedAt() shared.TimeExp {
 	return req.CreatedAt

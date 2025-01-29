@@ -6,7 +6,7 @@ import (
 	"log/slog"
 
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/authentication"
-	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/rest/constant"
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/constant"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/types/controller"
 )
 

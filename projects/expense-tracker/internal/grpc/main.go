@@ -10,7 +10,10 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/config"
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/grpc/expense"
+	expensev1 "github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/grpc/generated/expense-tracker/expense/v1"
 	sanitaryv1 "github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/grpc/generated/expense-tracker/sanitary/v1"
+	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/grpc/interceptor"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/grpc/sanitary"
 	"github.com/talgat-ruby/lessons-go/projects/expense-tracker/internal/types/controller"
 )
@@ -36,10 +39,11 @@ func (g *Grpc) Start(ctx context.Context) error {
 		return err
 	}
 
-	srv := grpc.NewServer()
-
-	// Register reflection service on gRPC server.
-	reflection.Register(srv)
+	inter := interceptor.New(g.logger, g.ctrl)
+	srv := grpc.NewServer(
+		grpc.UnaryInterceptor(inter.Unary),
+		grpc.StreamInterceptor(inter.Stream),
+	)
 
 	sanitaryv1.RegisterSanitaryServiceServer(
 		srv,
@@ -47,6 +51,16 @@ func (g *Grpc) Start(ctx context.Context) error {
 			g.logger.With(slog.String("component", "sanitary")),
 		),
 	)
+	expensev1.RegisterExpenseServiceServer(
+		srv,
+		expense.New(
+			g.logger.With(slog.String("component", "expense")),
+			g.ctrl,
+		),
+	)
+
+	// Register reflection service on gRPC server.
+	reflection.Register(srv)
 
 	g.logger.InfoContext(ctx, "starting server", slog.Int("port", g.conf.Port))
 	if err := srv.Serve(lis); err != nil {
