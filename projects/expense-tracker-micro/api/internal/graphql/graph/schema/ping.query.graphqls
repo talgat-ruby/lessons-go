@@ -1,0 +1,7 @@
+type Query {
+    getPing: Ping
+}
+
+type Mutation {
+    getPing: Ping
+}

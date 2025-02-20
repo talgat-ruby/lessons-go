@@ -103,7 +103,7 @@ func (h *handler) upload(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 
 	// Limit file size to 10MB
-	r.Body = http.MaxBytesReader(w, r.Body, 10<<20)
+	r.Body = http.MaxBytesReader(w, r.Body, 100<<20)
 
 	// Parse multipart form with 32MB max memory
 	if err := r.ParseMultipartForm(32 << 20); err != nil {
